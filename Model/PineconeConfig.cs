@@ -11,9 +11,9 @@ namespace ChatBotAPIWithRAGPipeline.Models
         public string ApiKey { get; set; } = string.Empty;
 
         /// <summary>
-        /// Pinecone environment/region (e.g., "us-west4-aws")
+        /// Pinecone Index Host/Endpoint URL
         /// </summary>
-        public string Environment { get; set; } = string.Empty;
+        public string IndexHost { get; set; } = string.Empty;
 
         /// <summary>
         /// Name of the Pinecone index to use for vectors
@@ -21,12 +21,17 @@ namespace ChatBotAPIWithRAGPipeline.Models
         public string IndexName { get; set; } = "rag-documents";
 
         /// <summary>
-        /// Dimension of vectors (typically 1536 for text-embedding-3-small, 3072 for text-embedding-3-large)
+        /// Namespace within the index for data isolation
         /// </summary>
-        public int Dimension { get; set; } = 3072;
+        public string Namespace { get; set; } = "default";
 
         /// <summary>
-        /// Metric type for similarity search (cosine, euclidean, dotproduct)
+        /// Dimension of vectors (1024 for NVIDIA embeddings)
+        /// </summary>
+        public int Dimension { get; set; } = 1024;
+
+        /// <summary>
+        /// Metric type for similarity search
         /// </summary>
         public string Metric { get; set; } = "cosine";
     }

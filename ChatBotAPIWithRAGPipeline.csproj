@@ -28,5 +28,8 @@
     
     <!-- HTTP Utilities -->
     <PackageReference Include="RestSharp" Version="107.3.0" />
+    <PackageReference Include="iTextSharp" Version="5.5.13" />
+    <!-- OR -->
+    <PackageReference Include="PdfSharp" Version="6.2.1" />
   </ItemGroup>
 </Project>

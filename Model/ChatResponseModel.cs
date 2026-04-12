@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
@@ -7,10 +6,21 @@ namespace ChatBotAPIWithRAGPipeline.Models;
 public class ChatResponseModel
 {
     public string AIResponse { get; set; }
-    public bool IsImage { get; set; }
-    public bool IsVideo { get; set; }
+    public List<SourceDocument>? SourceDocuments { get; set; }
+    public float? ConfidenceScore { get; set; }
+    public string Mode { get; set; } // "RAG" or "LLM_ONLY"
+    public long ExecutionTimeMs { get; set; }
 }
 
+public class SourceDocument
+{
+    public string Id { get; set; }
+    public string Title { get; set; }
+    public string Content { get; set; }
+    public Dictionary<string, object> Metadata { get; set; }
+    public float SimilarityScore { get; set; }
+    public string SourceFile { get; set; }
+}
 
 public class NVidiaChatCompletion
 {

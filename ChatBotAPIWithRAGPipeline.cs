@@ -2,8 +2,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using ChatBotAPIWithRAGPipeline.Models;
 using ChatBotAPIWithRAGPipeline.Services;
+using ChatBotAPIWithRAGPipeline.Interfaces;
 
 namespace ChatBotAPIWithRAGPipeline.Functions
 {
@@ -33,10 +35,7 @@ namespace ChatBotAPIWithRAGPipeline.Functions
                 _logger.LogInformation("Chat function triggered.");
 
                 var body = await new StreamReader(req.Body).ReadToEndAsync();
-                var chatRequest = System.Text.Json.JsonSerializer.Deserialize<ChatRequestModel>(body, new System.Text.Json.JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
+                var chatRequest = JsonConvert.DeserializeObject<ChatRequestModel>(body);
 
                 if (chatRequest is null)
                     return new BadRequestObjectResult("Invalid request body.");
@@ -50,7 +49,7 @@ namespace ChatBotAPIWithRAGPipeline.Functions
                 if (string.IsNullOrWhiteSpace(chatRequest.Provider))
                     return new BadRequestObjectResult("Provider is required.");
 
-                var response = await _aiChatService.GetResponseAsync(chatRequest.UserInput, chatRequest.Model, chatRequest.Provider);
+                var response = await _aiChatService.GetChatResponseWithRagAsync(chatRequest);
 
                 return new OkObjectResult(response);
             }

@@ -25,6 +25,10 @@ builder.Services.AddScoped<ProviderConfigService>();
 
 // Register AI Chat service
 builder.Services.AddScoped<IAiChatService, AiChatService>();
+builder.Services.AddScoped<IDocumentProcessor, DocumentProcessor>();
+builder.Services.AddScoped<IRagOrchestrator, RagOrchestrator>();
+builder.Services.AddScoped<IVectorStore, PineconeVectorStore>();
+builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
 
 // ============== Semantic Kernel Setup (Optional) ==============
 var config = builder.Configuration;
@@ -42,18 +46,19 @@ var llmProvider = LLMProviderFactory.Create(config);
     #pragma warning restore SKEXP0010
 
 // ============== Pinecone Setup ==============
-// Only register Pinecone if credentials are available
-var pineconeApiKey = Environment.GetEnvironmentVariable("PINECONE_API_KEY") ?? config["Pinecone:ApiKey"];
-var pineconeEnvironment = Environment.GetEnvironmentVariable("PINECONE_ENVIRONMENT") ?? config["Pinecone:Environment"];
-var pineconeIndexName = Environment.GetEnvironmentVariable("PINECONE_INDEX_NAME") ?? config["Pinecone:IndexName"] ?? "rag-documents";
+var pineconeApiKey = config["PINECONE_API_KEY"] ?? Environment.GetEnvironmentVariable("PINECONE_API_KEY");
+var pineconeIndexHost = config["PINECONE_INDEX_HOST"] ?? Environment.GetEnvironmentVariable("PINECONE_INDEX_HOST");
+var pineconeIndexName = config["PINECONE_INDEX_NAME"] ?? Environment.GetEnvironmentVariable("PINECONE_INDEX_NAME") ?? "rag-documents";
+var pineconeNamespace = config["PINECONE_NAMESPACE"] ?? Environment.GetEnvironmentVariable("PINECONE_NAMESPACE") ?? "default";
 
-if (!string.IsNullOrEmpty(pineconeApiKey) && !string.IsNullOrEmpty(pineconeEnvironment))
+if (!string.IsNullOrEmpty(pineconeApiKey) && !string.IsNullOrEmpty(pineconeIndexHost))
 {
     builder.Services.AddSingleton(new PineconeConfig
     {
         ApiKey = pineconeApiKey,
-        Environment = pineconeEnvironment,
-        IndexName = pineconeIndexName
+        IndexHost = pineconeIndexHost,
+        IndexName = pineconeIndexName,
+        Namespace = pineconeNamespace
     });
 }
 
