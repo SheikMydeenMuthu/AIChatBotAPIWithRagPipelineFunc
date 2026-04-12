@@ -184,6 +184,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                 return false;
             }
 
+
             // Check if documents exist in vector store
             var docsExist = await _ragOrchestrator.DocumentsExistAsync();
 

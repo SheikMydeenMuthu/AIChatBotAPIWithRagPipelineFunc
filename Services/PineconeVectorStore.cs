@@ -125,6 +125,9 @@ namespace ChatBotAPIWithRAGPipeline.Services
 
                 // Test with a simple query
                 var testVector = new float[_config.Dimension];
+
+                _logger.LogInformation($"Query vector dims: {testVector.Length}"); //todo testing purpose
+
                 var queryPayload = new
                 {
                     vector = testVector,
@@ -138,7 +141,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                 request.AddJsonBody(queryPayload);
 
                 var response = await _client.ExecuteAsync(request);
-
+               
                 if (!response.IsSuccessful)
                 {
                     _logger.LogWarning($"Index check failed: {response.StatusCode}");

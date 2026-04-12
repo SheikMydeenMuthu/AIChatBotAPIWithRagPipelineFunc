@@ -6,10 +6,7 @@ using Newtonsoft.Json;
 using ChatBotAPIWithRAGPipeline.Models;
 using ChatBotAPIWithRAGPipeline.Services;
 using ChatBotAPIWithRAGPipeline.Interfaces;
-
-namespace ChatBotAPIWithRAGPipeline.Functions
-{
-    public class ChatFunction
+public class ChatFunction
     {
         private readonly ILogger<ChatFunction> _logger;
         private readonly IAiChatService _aiChatService;
@@ -60,4 +57,3 @@ namespace ChatBotAPIWithRAGPipeline.Functions
             }
         }
     }
-}

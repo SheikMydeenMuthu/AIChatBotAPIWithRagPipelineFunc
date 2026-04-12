@@ -59,6 +59,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                 {
                     model = _embeddingModel,
                     input = new[] { text },
+                    input_type = "query",
                     encoding_format = "float"
                 };
 
@@ -118,6 +119,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                 {
                     model = _embeddingModel,
                     input = nonEmptyTexts,
+                    input_type = "query",
                     encoding_format = "float"
                 };
 

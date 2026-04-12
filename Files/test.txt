@@ -1,0 +1,3 @@
+Artificial Intelligence is transforming industries. Machine learning models can process large datasets.
+Natural language processing enables computers to understand human language. Deep learning uses neural networks.
+Vector databases like Pinecone enable similarity search. Embeddings convert text to numerical vectors.
