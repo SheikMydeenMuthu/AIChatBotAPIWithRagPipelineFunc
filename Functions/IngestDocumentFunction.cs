@@ -45,6 +45,9 @@ namespace ChatBotAPIWithRAGPipeline.Functions
 
                 if (file == null || file.Length == 0)
                     return new BadRequestObjectResult("No file provided.");
+                    
+                if (file.Length > 4 * 1024 * 1024)
+                    return new BadRequestObjectResult($"File size {file.Length / (1024 * 1024)}MB exceeds 4MB Pinecone limit. Please upload a smaller file.");
 
                 // Get chunk parameters from form
                 var chunkSizeStr = form["chunkSize"].FirstOrDefault() ?? "1000";
@@ -99,7 +102,7 @@ namespace ChatBotAPIWithRAGPipeline.Functions
                 var chunkTexts = chunks.Select(c => c.Content).ToList();
                 var embeddings = await _embeddingService.GenerateEmbeddingsBatchAsync(chunkTexts);
 
-               _logger.LogInformation($"Ingest vector dims: {embeddings.First().Value.Length}");
+                _logger.LogInformation($"Ingest vector dims: {embeddings.First().Value.Length}");
                 // Prepare vectors for Pinecone
                 var vectorsToUpsert = new List<(string Id, float[] Embedding, string Content, Dictionary<string, object> Metadata)>();
 

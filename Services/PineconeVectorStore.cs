@@ -95,8 +95,8 @@ namespace ChatBotAPIWithRAGPipeline.Services
                             Title = metadata?.ContainsKey("title") == true ? metadata["title"]?.ToString() ?? "Untitled" : "Untitled",
                             Content = metadata?.ContainsKey("content") == true ? metadata["content"]?.ToString() ?? string.Empty : string.Empty,
                             SourceFile = metadata?.ContainsKey("source") == true ? metadata["source"]?.ToString() ?? "unknown" : "unknown",
-                            ChunkIndex = metadata?.ContainsKey("chunk_index") == true 
-                                ? int.TryParse(metadata["chunk_index"]?.ToString(), out int idx) ? idx : 0 
+                            ChunkIndex = metadata?.ContainsKey("chunk_index") == true
+                                ? int.TryParse(metadata["chunk_index"]?.ToString(), out int idx) ? idx : 0
                                 : 0,
                             SimilarityScore = (float?)match.score ?? 0f,
                             Metadata = metadata ?? new Dictionary<string, object>()
@@ -123,36 +123,24 @@ namespace ChatBotAPIWithRAGPipeline.Services
             {
                 _logger.LogInformation($"Checking Pinecone index '{_config.IndexName}' status");
 
-                // Test with a simple query
-                var testVector = new float[_config.Dimension];
-
-                _logger.LogInformation($"Query vector dims: {testVector.Length}"); //todo testing purpose
-
-                var queryPayload = new
-                {
-                    vector = testVector,
-                    topK = 1,
-                    @namespace = _config.Namespace
-                };
-
-                var request = new RestRequest("/query", Method.Post);
+                var request = new RestRequest("/describe_index_stats", Method.Post);
                 request.AddHeader("Api-Key", _config.ApiKey);
                 request.AddHeader("Content-Type", "application/json");
-                request.AddJsonBody(queryPayload);
+                request.AddJsonBody(new { });
 
                 var response = await _client.ExecuteAsync(request);
-               
+
                 if (!response.IsSuccessful)
                 {
                     _logger.LogWarning($"Index check failed: {response.StatusCode}");
                     return false;
                 }
 
-                var queryResponse = JsonConvert.DeserializeObject<dynamic>(response.Content);
-                var hasVectors = queryResponse?.matches?.Count > 0;
+                var stats = JsonConvert.DeserializeObject<dynamic>(response.Content);
+                var totalRecords = (long)(stats?.totalVectorCount ?? 0);
 
-                _logger.LogInformation($"Index status: {(hasVectors ? "Has vectors" : "Empty")}");
-                return hasVectors;
+                _logger.LogInformation($"Index record count: {totalRecords}");
+                return totalRecords > 0;
             }
             catch (Exception ex)
             {
@@ -229,37 +217,52 @@ namespace ChatBotAPIWithRAGPipeline.Services
 
                 _logger.LogInformation($"Batch upserting {vectors.Count} vectors");
 
-                var upsertVectors = vectors.Select(v =>
-                {
-                    var metadata = v.Metadata ?? new Dictionary<string, object>();
-                    if (!metadata.ContainsKey("content"))
-                        metadata["content"] = v.Content;
+                // Split into batches of 100
+                const int batchSize = 100;
+                var batches = vectors
+                    .Select((v, i) => new { v, i })
+                    .GroupBy(x => x.i / batchSize)
+                    .Select(g => g.Select(x => x.v).ToList())
+                    .ToList();
 
-                    return new
+                _logger.LogInformation($"Splitting into {batches.Count} batches of {batchSize}");
+
+                foreach (var batch in batches)
+                {
+                    var upsertVectors = batch.Select(v =>
                     {
-                        id = v.Id,
-                        values = v.Embedding,
-                        metadata = metadata
+                        var metadata = v.Metadata ?? new Dictionary<string, object>();
+                        if (!metadata.ContainsKey("content"))
+                            metadata["content"] = v.Content;
+
+                        return new
+                        {
+                            id = v.Id,
+                            values = v.Embedding,
+                            metadata = metadata
+                        };
+                    }).ToArray();
+
+                    var upsertPayload = new
+                    {
+                        vectors = upsertVectors,
+                        @namespace = _config.Namespace
                     };
-                }).ToArray();
 
-                var upsertPayload = new
-                {
-                    vectors = upsertVectors,
-                    @namespace = _config.Namespace
-                };
+                    var request = new RestRequest("/vectors/upsert", Method.Post);
+                    request.AddHeader("Api-Key", _config.ApiKey);
+                    request.AddHeader("Content-Type", "application/json");
+                    request.AddJsonBody(upsertPayload);
 
-                var request = new RestRequest("/vectors/upsert", Method.Post);
-                request.AddHeader("Api-Key", _config.ApiKey);
-                request.AddHeader("Content-Type", "application/json");
-                request.AddJsonBody(upsertPayload);
+                    var response = await _client.ExecuteAsync(request);
 
-                var response = await _client.ExecuteAsync(request);
+                    if (!response.IsSuccessful)
+                    {
+                        _logger.LogError($"Batch upsert failed: {response.StatusCode} - {response.Content}");
+                        throw new InvalidOperationException($"Failed to batch upsert vectors: {response.Content}");
+                    }
 
-                if (!response.IsSuccessful)
-                {
-                    _logger.LogError($"Batch upsert failed: {response.StatusCode} - {response.Content}");
-                    throw new InvalidOperationException($"Failed to batch upsert vectors: {response.Content}");
+                    _logger.LogInformation($"Upserted batch of {batch.Count} vectors");
                 }
 
                 _logger.LogInformation($"Successfully batch upserted {vectors.Count} vectors");

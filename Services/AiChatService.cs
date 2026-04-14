@@ -95,6 +95,9 @@ namespace ChatBotAPIWithRAGPipeline.Services
                 var contexts = await _ragOrchestrator.RetrieveContextAsync(
                     request.UserInput,
                     request.TopK);
+                    _logger.LogWarning("Similarity : " +contexts.Where(c => c.SimilarityScore > 0.7).Count() + " documents retrieved with similarity > 0.7");
+
+                contexts = contexts.Where(c => c.SimilarityScore > 0.3).ToList();
 
                 if (!contexts.Any())
                 {

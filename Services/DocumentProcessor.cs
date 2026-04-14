@@ -1,6 +1,7 @@
 using ChatBotAPIWithRAGPipeline.Interfaces;
 using ChatBotAPIWithRAGPipeline.Models;
 using Microsoft.Extensions.Logging;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ChatBotAPIWithRAGPipeline.Services
@@ -153,12 +154,30 @@ namespace ChatBotAPIWithRAGPipeline.Services
         /// </summary>
         private string ExtractTextFromPdf(byte[] pdfContent)
         {
-            // Placeholder - requires iTextSharp or PdfSharp NuGet package
-            // For MVP, we'll return the filename indication
-            _logger.LogWarning("PDF extraction not fully implemented. Please add iTextSharp or PdfSharp NuGet package.");
-            
-            return "PDF content extraction requires additional NuGet package. " +
-                   "Please install 'iTextSharp' or 'PdfSharp' and update this method.";
+            try
+            {
+                var sb = new StringBuilder();
+                using var ms = new MemoryStream(pdfContent);
+                using var reader = new iText.Kernel.Pdf.PdfReader(ms);
+                using var document = new iText.Kernel.Pdf.PdfDocument(reader);
+
+                for (int i = 1; i <= document.GetNumberOfPages(); i++)
+                {
+                    var strategy = new iText.Kernel.Pdf.Canvas.Parser.Listener.SimpleTextExtractionStrategy();
+                    var pageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(document.GetPage(i), strategy);
+                    sb.AppendLine(pageText);
+                }
+
+                var extractedText = sb.ToString().Trim();
+                _logger.LogInformation($"Extracted {extractedText.Length} characters from PDF ({document.GetNumberOfPages()} pages)");
+
+                return extractedText;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error extracting text from PDF");
+                throw;
+            }
         }
 
         /// <summary>
