@@ -97,7 +97,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                     request.TopK);
                     _logger.LogWarning("Similarity : " +contexts.Where(c => c.SimilarityScore > 0.7).Count() + " documents retrieved with similarity > 0.7");
 
-                contexts = contexts.Where(c => c.SimilarityScore > 0.3).ToList();
+                contexts = contexts.Where(c => c.SimilarityScore > 0.35).ToList();
 
                 if (!contexts.Any())
                 {

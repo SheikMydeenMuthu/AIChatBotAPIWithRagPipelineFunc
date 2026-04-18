@@ -264,3 +264,4 @@ __pycache__/
 *.pyc
 Properties/launchSettings.json
 Files/Enterprise-Application-Patterns-Using-.NET-MAUI.pdf
+.continue/agents/Groq-config.yaml

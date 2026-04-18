@@ -29,6 +29,7 @@ builder.Services.AddScoped<IDocumentProcessor, DocumentProcessor>();
 builder.Services.AddScoped<IRagOrchestrator, RagOrchestrator>();
 builder.Services.AddScoped<IVectorStore, PineconeVectorStore>();
 builder.Services.AddScoped<IEmbeddingService, EmbeddingService>();
+builder.Services.AddScoped<IWebScraper, WebScraper>();
 
 // ============== Semantic Kernel Setup (Optional) ==============
 var config = builder.Configuration;
