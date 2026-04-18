@@ -1,0 +1,260 @@
+{
+  "info": {
+    "_postman_id": "aaccbaa8-0d08-4698-b579-522cd7df4ebc",
+    "name": "ChatBotAzureFuncApp-local",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "4035937"
+  },
+  "item": [
+    {
+      "name": "Chat",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"UserInput\" : \"Who is Sheik\",\r\n    \"Model\" : \"meta/llama3-8b-instruct\",\r\n    \"Provider\" :\"Nvidia\",\r\n    \"input_type\" : \"query\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:7071/api/chat",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "7071",
+          "path": [
+            "api",
+            "chat"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetPineConeFileChungsDetails",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Api-Key",
+            "value": "<PinconeApikey>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"UserInput\" : \"please genrate drogan image with fire emitted and broad wings\",\r\n    \"Model\" : \"meta/llama3-8b-instruct\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pinconeembedingindex-s4gno2h.svc.aped-4627-b74a.pinecone.io/vectors/fetch?ids=test.txt_chunk_0&ids=test.txt_chunk_1&namespace=sheik-rag",
+          "protocol": "https",
+          "host": [
+            "pinconeembedingindex-s4gno2h",
+            "svc",
+            "aped-4627-b74a",
+            "pinecone",
+            "io"
+          ],
+          "path": [
+            "vectors",
+            "fetch"
+          ],
+          "query": [
+            {
+              "key": "ids",
+              "value": "test.txt_chunk_0"
+            },
+            {
+              "key": "ids",
+              "value": "test.txt_chunk_1"
+            },
+            {
+              "key": "namespace",
+              "value": "sheik-rag"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetPineConeFileVectors",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Api-Key",
+            "value": "<PinconeApikey?",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"UserInput\" : \"please genrate drogan image with fire emitted and broad wings\",\r\n    \"Model\" : \"meta/llama3-8b-instruct\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pinconeembedingindex-s4gno2h.svc.aped-4627-b74a.pinecone.io/vectors/list?prefix=test.txt&namespace=sheik-rag&limit=100",
+          "protocol": "https",
+          "host": [
+            "pinconeembedingindex-s4gno2h",
+            "svc",
+            "aped-4627-b74a",
+            "pinecone",
+            "io"
+          ],
+          "path": [
+            "vectors",
+            "list"
+          ],
+          "query": [
+            {
+              "key": "prefix",
+              "value": "test.txt"
+            },
+            {
+              "key": "namespace",
+              "value": "sheik-rag"
+            },
+            {
+              "key": "limit",
+              "value": "100"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "RemovePineConeFileVectors",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Api-Key",
+            "value": "<PinconeApikey>",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"ids\": [\"test.txt_chunk_0\", \"test.txt_chunk_1\"],\r\n    \"namespace\": \"sheik-rag\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://pinconeembedingindex-s4gno2h.svc.aped-4627-b74a.pinecone.io/vectors/delete",
+          "protocol": "https",
+          "host": [
+            "pinconeembedingindex-s4gno2h",
+            "svc",
+            "aped-4627-b74a",
+            "pinecone",
+            "io"
+          ],
+          "path": [
+            "vectors",
+            "delete"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "ingestDocument",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "uuid": "d759f52c-6917-4eaf-bb3b-5b18b6016e3a",
+              "src": "/C:/WorkPlace/AzureFunctionApps/AIChatBotAPIWithRagPipelineFunc/Files/test.txt"
+            },
+            {
+              "key": "chunkSize",
+              "value": "300",
+              "type": "text",
+              "uuid": "3f8c24ba-27f3-436c-8641-b4344d938526"
+            },
+            {
+              "key": "chunkOverlap",
+              "value": "50",
+              "type": "text",
+              "uuid": "42317589-3b3d-4e33-a561-40897595757f"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:7071/api/ingest",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "7071",
+          "path": [
+            "api",
+            "ingest"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Web Ingest",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"url\" : \"https://www.zinghr.com/hr-need/hr-policies-in-india/\",\r\n    \"chunkSize\" : \"1000\",\r\n    \"chunkOverlap\" : \"100\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:7071/api/Ingest/Web",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "7071",
+          "path": [
+            "api",
+            "Ingest",
+            "Web"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
