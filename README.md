@@ -33,6 +33,14 @@ User Query
                          LLM Response (NVIDIA / Azure OpenAI / OpenAI)
 ```
 
+<img width="1082" height="877" alt="image" src="https://github.com/user-attachments/assets/4ef8d03f-cb3b-4305-b9aa-691b8ed588bc" />
+<img width="1077" height="813" alt="image" src="https://github.com/user-attachments/assets/f30378bc-2d3b-4a7d-bdfc-f77477e8f899" />
+<img width="1071" height="857" alt="image" src="https://github.com/user-attachments/assets/650ca302-f86e-4172-a952-74cdc2f280b5" />
+<img width="1062" height="891" alt="image" src="https://github.com/user-attachments/assets/e1a828c3-2e02-44e4-86db-b37628ee9b85" />
+<img width="1072" height="883" alt="image" src="https://github.com/user-attachments/assets/efef12af-a14b-4975-be7f-f3f498d26dba" />
+<img width="1080" height="802" alt="image" src="https://github.com/user-attachments/assets/56e9af16-7ef2-4e97-979d-1c8754edf791" />
+
+
 ---
 
 ## 📦 Tech Stack
