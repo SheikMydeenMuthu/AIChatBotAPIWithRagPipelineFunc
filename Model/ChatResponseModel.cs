@@ -8,7 +8,7 @@ public class ChatResponseModel
     public string AIResponse { get; set; }
     public List<SourceDocument>? SourceDocuments { get; set; }
     public float? ConfidenceScore { get; set; }
-    public string Mode { get; set; } // "RAG" or "LLM_ONLY"
+    public string Mode { get; set; } // "RAG" or "LLM"
     public long ExecutionTimeMs { get; set; }
 }
 

@@ -162,7 +162,7 @@ namespace ChatBotAPIWithRAGPipeline.Services
                     request.Model,
                     request.Provider);
 
-                response.Mode = "LLM_ONLY";
+                response.Mode = "LLM";
                 response.SourceDocuments = null;
 
                 _logger.LogInformation("LLM-only query processed successfully");
